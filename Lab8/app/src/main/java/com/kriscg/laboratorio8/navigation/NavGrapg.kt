@@ -1,48 +1,30 @@
 package com.kriscg.laboratorio8.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.kriscg.laboratorio8.screens.ScreenLogin
-import com.kriscg.laboratorio8.screens.ScreenCharacters
-import com.kriscg.laboratorio8.screens.ScreenCharacterDetails
+import com.kriscg.laboratorio8.screens.ScreenMenu
 
 @Composable
 fun SetupNavGraph() {
-    val navController = rememberNavController()
-    val context = LocalContext.current
+    val rootNavController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
-
+    NavHost(navController = rootNavController, startDestination = Screen.Login.route) {
         composable(Screen.Login.route) {
             ScreenLogin(
                 onStartClicked = {
-                    navController.navigate(Screen.Characters.route) {
+                    rootNavController.navigate(Screen.Menu.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable(Screen.Characters.route) {
-            ScreenCharacters(
-                onCharacterClick = { id ->
-                    navController.navigate(Screen.CharacterDetails.createRoute(id))
-                }
-            )
-        }
 
-        composable(
-            route = "character_details/{characterId}",
-            arguments = listOf(navArgument("characterId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getInt("characterId") ?: return@composable
-            ScreenCharacterDetails(characterId = id, onBack = { navController.popBackStack() })
+        composable(Screen.Menu.route) {
+            ScreenMenu(rootNavController = rootNavController)
         }
     }
 }
-
