@@ -26,8 +26,8 @@ fun ScreenLogin(
             model = R.drawable.logo,
             contentDescription = "Logo",
             modifier = Modifier
-                .width(200.dp)
-                .height(200.dp)
+                .width(300.dp)
+                .height(250.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(
