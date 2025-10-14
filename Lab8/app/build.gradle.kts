@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -40,6 +41,10 @@ android {
     }
 }
 
+ksp{
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -58,6 +63,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -7,15 +7,27 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kriscg.laboratorio8.R
+import com.kriscg.laboratorio8.data.datastore.UserPreferences
+import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
+import com.kriscg.laboratorio8.data.datastore.dataStore
+
 
 @Composable
 fun ScreenProfile(onLogout: () -> Unit) {
+    val context = LocalContext.current
+    val userPreferences = remember { UserPreferences(context.dataStore) }
+    val userNameState = userPreferences.userName.collectAsState(initial = "")
+    val userName = userNameState.value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,11 +44,15 @@ fun ScreenProfile(onLogout: () -> Unit) {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Kristel Castillo")
+        Text(text = "Usuario: $userName")
         Text(text = "#241294")
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onLogout) {
+        Button(onClick = {kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            userPreferences.clearUserName()
+        }
+        onLogout()
+        }) {
             Text("Cerrar sesión")
         }
     }

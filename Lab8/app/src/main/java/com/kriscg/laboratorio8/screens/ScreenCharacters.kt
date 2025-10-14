@@ -16,27 +16,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.kriscg.laboratorio8.R
-import com.kriscg.laboratorio8.data.CharacterDb
-import com.kriscg.laboratorio8.models.Character
 import com.kriscg.laboratorio8.ViewModel.CharactersViewModel
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kriscg.laboratorio8.ViewModel.CharactersViewModelFactory
+import com.kriscg.laboratorio8.data.room.AppDatabase
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenCharacters(
-    onCharacterClick: (Int) -> Unit,
-    viewModel: CharactersViewModel = viewModel()
+database: AppDatabase,
+onCharacterClick: (Int) -> Unit
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle().value
+    val factory = CharactersViewModelFactory(database)
+    val viewModel: CharactersViewModel = viewModel(factory = factory)
+    val state = viewModel.state.collectAsState().value
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Characters") },
-            )
+            TopAppBar(title = { Text("Characters") })
         }
     ) { padding ->
         when {
@@ -50,7 +48,6 @@ fun ScreenCharacters(
                     CircularProgressIndicator()
                 }
             }
-
             state.isError -> {
                 Box(
                     modifier = Modifier
@@ -67,7 +64,6 @@ fun ScreenCharacters(
                     }
                 }
             }
-
             state.data != null -> {
                 LazyColumn(
                     contentPadding = padding,
@@ -84,7 +80,7 @@ fun ScreenCharacters(
                         ) {
                             AsyncImage(
                                 model = character.image,
-                                contentDescription = null,
+                                contentDescription = character.name,
                                 modifier = Modifier
                                     .size(64.dp)
                                     .padding(end = 8.dp)
@@ -100,5 +96,3 @@ fun ScreenCharacters(
         }
     }
 }
-
-

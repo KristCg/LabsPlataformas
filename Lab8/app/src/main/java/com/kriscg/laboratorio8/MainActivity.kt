@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.kriscg.laboratorio8.data.room.AppDatabase
 import com.kriscg.laboratorio8.ui.theme.Laboratorio8Theme
 import com.kriscg.laboratorio8.navigation.SetupNavGraph
 
@@ -11,9 +12,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val database = AppDatabase.getDatabase(this)
         setContent {
             Laboratorio8Theme {
-                SetupNavGraph()
+                SetupNavGraph(
+                    database = database)
             }
         }
     }
